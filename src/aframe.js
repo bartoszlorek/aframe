@@ -40,37 +40,63 @@ define( [], function () {
         return request;
     }
 
+    function repeatUntilFrame(callback, frame, context) {
+        var start = 0;
+        return repeat(function(request) {
+            if (start >= (frame || 0)) {
+                callback.call(context, request);
+                return false;
+            } start++;
+        });
+    }
+
     function repeatDelay(callback, delay, context) {
         var start = Date.now();
         return repeat(function(request) {
-            if (isExpired(start, delay)) {
+            var current = Date.now(),
+                delta = current - start;
+            if (delta >= (delay || 0)) {
                 if (callback.call(context, request) === false)
                     return false;
-                start = Date.now();
+                start = current;
             } 
         });
     }
 
-    function isExpired(start, duration) {
-        var current = Date.now(),
-            delta = current - start;
-        return (delta >= (duration || 0));
-    }
+    function waitForFrame(delay, callback) {
+        var out = { wait: wait },
+            sum = 0;
 
-    function clear(request) {
-        if (request.hasOwnProperty('id'))
-            cancelAnimationFrame(request.id);
+        function wait(delay, callback) {
+            callback = typeof delay === 'function' ? delay
+                : (typeof callback === 'function' ? callback
+                : function() {});
+            delay = typeof delay === 'number' ? delay : 1;
+            sum += delay;
+
+            repeatUntilFrame(function() {
+                if (typeof callback === 'function')
+                    callback.call();
+                return false;
+            }, sum);
+            return out;
+        }
+        return wait(delay, callback);
     }
 
     return {
-        clear: clear,
         setInterval: repeatDelay,
         setTimeout: function(callback, delay, context) {
             return repeatDelay(function(request) {
                 callback(request);
                 return false;
             }, delay, context);
-        }
+        },
+        clear: function(request) {
+            if (request.hasOwnProperty('id'))
+                cancelAnimationFrame(request.id);
+        },
+        wait: waitForFrame
     }
 
 });

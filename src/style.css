@@ -1,0 +1,9 @@
+
+#object {
+    width: 100px; height: 100px;
+    background: #ddd;
+    transition: transform .2s;
+}
+.animate {
+    transform: translateX(10vw);
+}

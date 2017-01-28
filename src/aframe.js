@@ -40,12 +40,12 @@ define( [], function () {
         return request;
     }
 
-    function repeatUntilFrame(callback, frame, context) {
+    function repeatFrames(callback, frames, context) {
         var start = 0;
         return repeat(function(request) {
-            if (start >= (frame || 0)) {
-                callback.call(context, request);
-                return false;
+            if (start >= (frames || 0)) {
+                if (callback.call(context, request) === false)
+                    return false;
             } start++;
         });
     }
@@ -63,28 +63,34 @@ define( [], function () {
         });
     }
 
-    function waitForFrame(delay, callback) {
-        var out = { wait: wait },
-            sum = 0;
+    function wait(value, context, callback, method) {
+        var remain = 0,
+            output = {
+                waitTimeout: deferred,
+                id: []
+            };
+        function deferred(value, context, callback) {
+            var _value = typeof value === 'number' && value || 0,
+                _context = typeof callback === 'function' && context || null,
+                _callback = callback ||
+                    typeof context === 'function' && context ||
+                    typeof value === 'function' && value,
 
-        function wait(delay, callback) {
-            callback = typeof delay === 'function' ? delay
-                : (typeof callback === 'function' ? callback
-                : function() {});
-            delay = typeof delay === 'number' ? delay : 1;
-            sum += delay;
-
-            repeatUntilFrame(function() {
-                if (typeof callback === 'function')
-                    callback.call();
+            request = method(function(request) {
+                _callback.call(_context, request);
                 return false;
-            }, sum);
-            return out;
+            }, (remain += _value));
+            output.id.push(request);
+            return output;
         }
-        return wait(delay, callback);
+        return deferred.apply(null, arguments);
     }
 
     return {
+        clear: function(request) {
+            if (request.hasOwnProperty('id'))
+                cancelAnimationFrame(request.id);
+        },
         setInterval: repeatDelay,
         setTimeout: function(callback, delay, context) {
             return repeatDelay(function(request) {
@@ -92,11 +98,9 @@ define( [], function () {
                 return false;
             }, delay, context);
         },
-        clear: function(request) {
-            if (request.hasOwnProperty('id'))
-                cancelAnimationFrame(request.id);
-        },
-        wait: waitForFrame
+        waitTimeout: function(delay, context, callback) {
+            return wait(delay, context, callback, repeatDelay);
+        }
     }
 
 });

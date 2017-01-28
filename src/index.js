@@ -34,25 +34,21 @@ require( ['aframe'], function(af) {
     */
 
 
-    af.wait(function() {
-        console.log('fire after 1st frame');
+    var chain = af.waitTimeout(10, function() {
+        console.log('hello1');
 
-    }).wait(50, function() {
-        console.log('fire after 51st frame');
+    }).waitTimeout(1000, { dog:'woof' }, function() {
+        console.log('hello2', this);
 
-    }).wait(function() {
-        console.log('fire after 52nd frame');
+    }).waitTimeout(function() {
+        console.log('hello3');
+
+    }).waitTimeout(500, { cat:'meow' }, function() {
+        console.log('hello4');
+
     });
-
-
-    /*
-    var square = document.getElementById('square');
-        square.className += 'animate';
-    setTimeout(function() {
-        square.className = '';
-    }, 10);
-    */
     
+    console.log(chain);
     
 
 });

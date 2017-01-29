@@ -63,33 +63,61 @@ define( [], function () {
         });
     }
 
-    function wait(value, context, callback, method) {
-        var remain = 0,
-            output = {
-                waitTimeout: deferred,
-                id: []
-            };
-        function deferred(value, context, callback) {
-            var _value = typeof value === 'number' && value || 0,
-                _context = typeof callback === 'function' && context || null,
-                _callback = callback ||
-                    typeof context === 'function' && context ||
-                    typeof value === 'function' && value,
-
-            request = method(function(request) {
-                _callback.call(_context, request);
-                return false;
-            }, (remain += _value));
-            output.id.push(request);
-            return output;
+    // value [, context ] [, callback ]
+    function parseArguments(args) {
+        if (typeof args !== 'object')
+            return null;
+        return {
+            value: typeof args[0] === 'number' && args[0] || 0,
+            context: typeof args[2] === 'function' && args[1] || null,
+            callback: args[2] || typeof args[1] === 'function' && args[1]
+                              || typeof args[0] === 'function' && args[0]
+                              || function() {}
         }
-        return deferred.apply(null, arguments);
+    }
+
+    function Deferred(method, methodName, parameters) {
+        methodName = methodName || 'then';
+        var state = 'pending',
+            deferred = null,
+            self = this;
+
+        this.id = [];
+        this.params = parseArguments(parameters);
+        this.resolve = function() {
+            var request = method(function() {
+                state = 'resolved';
+                self.params.callback.call(self.params.context);
+                if (deferred !== null) {
+                    deferred.resolve();
+                }
+            }, self.params.value);
+            this.id.push(request);
+        }
+
+        this[methodName] = function() {
+            deferred = new Deferred(method, methodName);
+            deferred.params = parseArguments(arguments);
+            deferred.id = this.id;
+
+            if (state === 'resolved')
+                deferred.resolve();
+            return deferred;
+        }
+
+        if (this.params !== null)
+            this.resolve();
     }
 
     return {
         clear: function(request) {
-            if (request.hasOwnProperty('id'))
-                cancelAnimationFrame(request.id);
+            if (!request.hasOwnProperty('id'))
+                return;
+            cancelAnimationFrame(
+                request.id.constructor === Array ?
+                request.id[request.id.length-1].id :
+                request.id
+            );
         },
         setInterval: repeatDelay,
         setTimeout: function(callback, delay, context) {
@@ -98,8 +126,8 @@ define( [], function () {
                 return false;
             }, delay, context);
         },
-        waitTimeout: function(delay, context, callback) {
-            return wait(delay, context, callback, repeatDelay);
+        wait: function() {
+            return new Deferred(this.setTimeout, 'wait', arguments);
         }
     }
 

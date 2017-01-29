@@ -34,21 +34,23 @@ require( ['aframe'], function(af) {
     */
 
 
-    var chain = af.waitTimeout(10, function() {
-        console.log('hello1');
-
-    }).waitTimeout(1000, { dog:'woof' }, function() {
-        console.log('hello2', this);
-
-    }).waitTimeout(function() {
-        console.log('hello3');
-
-    }).waitTimeout(500, { cat:'meow' }, function() {
-        console.log('hello4');
-
-    });
     
-    console.log(chain);
+    var request = af.wait(100, function() {
+        console.log('hello 1');
+
+    }).wait(300, { dog:'woof' }, function() {
+        console.log('hello 2', this);
+
+    }).wait(1000, function() {
+        console.log('hello 3');
+
+    }).wait(100, { cat:'meow' }, function() {
+        console.log('hello 4', this);
+    });
+
+    /*af.setTimeout(function() {
+        af.clear(request);
+    }, 150);*/
     
 
 });

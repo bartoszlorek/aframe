@@ -9,18 +9,18 @@ Methods similar to native JavaScript functions.
 .setInterval( function[, delay] )
 ```
 
-Clear a `request` set with the methods above. The `request` is a return of them.
-
-```
-.clear( request )
-```
-
 Chain multiple `setTimeout` methods, behaving like a promise in few different forms.
 
 ```
 .wait( function )
 .wait( delay, function )
 .wait( delay, context, function )
+```
+
+Clear a `request` set with the methods above. The `request` is a return of them.
+
+```
+.clear( request )
 ```
 
 ## Examples

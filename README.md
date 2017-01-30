@@ -53,7 +53,7 @@ af.setInterval(function() {
 }, 100);
 ```
 
-The second callback in this example won't be executed.
+The third callback in this example won't be executed.
 
 ```javascript
 var request = af.wait(300, function() {

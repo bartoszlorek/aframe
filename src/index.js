@@ -33,24 +33,24 @@ require( ['aframe'], function(af) {
     }, 1000);
     */
 
-
     
-    var request = af.wait(100, function() {
-        console.log('hello 1');
+    var request = af.wait(function() {
+        console.log('hello');
 
-    }).wait(300, { dog:'woof' }, function() {
-        console.log('hello 2', this);
+    }).wait(300, "John", function(name) {
+        console.log('my name is ' + name);
 
-    }).wait(1000, function() {
-        console.log('hello 3');
+    }).wait(1000, ['cats', 'dogs'], function(pets) {
+        console.log('I like ' + pets.join(' and '));
 
-    }).wait(100, { cat:'meow' }, function() {
-        console.log('hello 4', this);
+    }).wait(100, function() {
+        console.log('bye');
     });
 
-    /*af.setTimeout(function() {
+    /*
+    af.setTimeout(function() {
         af.clear(request);
-    }, 150);*/
-    
+    }, 500);*/
+
 
 });

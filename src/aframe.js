@@ -34,64 +34,71 @@ define( [], function () {
     function repeat(callback) {
         var request = {};
         function loop() {
-            if (callback(request) !== false)
+            if (callback() !== false)
                 request.id = requestAnimationFrame(loop);
         } request.id = requestAnimationFrame(loop);
         return request;
     }
 
-    function repeatFrames(callback, frames, context) {
-        var start = 0;
-        return repeat(function(request) {
+    function repeatFrames(callback, frames) {
+        var args = Array.prototype.slice.call(arguments, 2),
+            start = 0;
+        return repeat(function() {
             if (start >= (frames || 0)) {
-                if (callback.call(context, request) === false)
+                if (callback.apply(null, args) === false)
                     return false;
             } start++;
         });
     }
 
-    function repeatDelay(callback, delay, context) {
-        var start = Date.now();
-        return repeat(function(request) {
+    function repeatDelay(callback, delay) {
+        var args = Array.prototype.slice.call(arguments, 2),
+            start = Date.now();
+        return repeat(function() {
             var current = Date.now(),
                 delta = current - start;
             if (delta >= (delay || 0)) {
-                if (callback.call(context, request) === false)
+                if (callback.apply(null, args) === false)
                     return false;
                 start = current;
             } 
         });
     }
 
-    // value [, context ] [, callback ]
-    function parseArguments(args) {
-        if (typeof args !== 'object')
+    // [value, param1, param2, ..., ]callback
+    function parseArguments(dirtyArguments) {
+        if (typeof dirtyArguments !== 'object')
             return null;
+        var params = Array.prototype.slice.call(dirtyArguments),
+            paramStart = typeof params[0] === 'number' ? 1 : 0;
         return {
-            value: typeof args[0] === 'number' && args[0] || 0,
-            context: typeof args[2] === 'function' && args[1] || null,
-            callback: args[2] || typeof args[1] === 'function' && args[1]
-                              || typeof args[0] === 'function' && args[0]
-                              || function() {}
+            value: typeof params[0] === 'number' && params[0] || 0,
+            extra: params.slice(paramStart, -1),
+            callback: typeof params[params.length-1] === 'function'
+                && params.slice(-1)[0] || function() {}
         }
     }
 
-    function Deferred(method, methodName, parameters) {
+    function Deferred(method, methodName, dirtyArguments) {
         methodName = methodName || 'then';
         var state = 'pending',
             deferred = null,
             self = this;
 
         this.id = [];
-        this.params = parseArguments(parameters);
+        this.params = parseArguments(dirtyArguments);
         this.resolve = function() {
-            var request = method(function() {
-                state = 'resolved';
-                self.params.callback.call(self.params.context);
-                if (deferred !== null) {
-                    deferred.resolve();
-                }
-            }, self.params.value);
+            var request,
+                wrapper = function() {
+                    state = 'resolved';
+                    self.params.callback.apply(null, arguments);
+                    if (deferred !== null) {
+                        deferred.resolve();
+                    }
+                },
+            params = Array.prototype.slice.call(self.params.extra);
+            params.unshift(wrapper, self.params.value);
+            request = method.apply(null, params);
             this.id.push(request);
         }
 
@@ -120,11 +127,13 @@ define( [], function () {
             );
         },
         setInterval: repeatDelay,
-        setTimeout: function(callback, delay, context) {
-            return repeatDelay(function(request) {
-                callback(request);
-                return false;
-            }, delay, context);
+        setTimeout: function(callback) {
+            var params = Array.prototype.slice.call(arguments, 1);
+                params.unshift(function() {
+                    callback.apply(null, arguments);
+                    return false;
+                });
+            return repeatDelay.apply(null, params);
         },
         wait: function() {
             return new Deferred(this.setTimeout, 'wait', arguments);

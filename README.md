@@ -5,16 +5,14 @@ Request Animation Frame Utilities AMD. Includes polyfill by Erik Möller (fixes 
 Methods similar to native JavaScript functions.
 
 ```
-.setTimeout( function[, delay] )
-.setInterval( function[, delay] )
+.setTimeout( function[, delay, param1, param2, ...] )
+.setInterval( function[, delay, param1, param2, ...] )
 ```
 
-Chain multiple `setTimeout` methods, behaving like a promise in few different forms.
+Chain multiple `setTimeout` methods (behaving like a promise) in a `wait` form.
 
 ```
-.wait( function )
-.wait( delay, function )
-.wait( delay, context, function )
+.wait( [delay, param1, param2, ..., ]function )
 ```
 
 Clear a `request` set with the methods above. The `request` is a return of them.
@@ -57,13 +55,13 @@ The third callback in this example won't be executed.
 
 ```javascript
 var request = af.wait(300, function() {
-    console.log('hello');
+    console.log('Hello');
 
-}).wait(100, context, function() {
-    console.log('hello with context', this);
+}).wait(100, ['cats', 'dogs'], function(pets) {
+    console.log('I like ' + pets.join(' and '));
 
-}).wait(function() {
-    console.log('he is fast, but not enough');
+}).wait('John', function(name) {
+    console.log(name + ' is fast, but not enough!');
 });
 
 af.setTimeout(function() {

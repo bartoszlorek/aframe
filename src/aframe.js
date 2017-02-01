@@ -86,7 +86,6 @@ define( [], function () {
 
         this.id = [];
         this.handle = parseArguments(dirtyArguments);
-
         this.resolve = function() {
             if (this.handle === null)
                 return false;
@@ -146,11 +145,11 @@ define( [], function () {
                 });
             return repeatFrames.apply(null, args);
         },
-        wait: function() {
-            return new Deferred(this.setTimeout, 'wait', arguments);
+        waitTime: function() {
+            return new Deferred(this.setTimeout, 'waitTime', arguments);
         },
-        waitFrame: function() {
-            return new Deferred(this.setFrameout, 'waitFrame', arguments);
+        waitFrames: function() {
+            return new Deferred(this.setFrameout, 'waitFrames', arguments);
         }
     }
 

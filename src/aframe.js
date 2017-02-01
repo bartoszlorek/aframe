@@ -42,12 +42,13 @@ define( [], function () {
 
     function repeatFrames(callback, frames) {
         var args = Array.prototype.slice.call(arguments, 2),
-            start = 0;
+            counter = 0;
         return repeat(function() {
-            if (start >= (frames || 0)) {
+            if (counter >= (frames || 0)) {
                 if (callback.apply(null, args) === false)
                     return false;
-            } start++;
+                counter = 0;
+            } counter++;
         });
     }
 
@@ -61,7 +62,7 @@ define( [], function () {
                 if (callback.apply(null, args) === false)
                     return false;
                 start = current;
-            } 
+            }
         });
     }
 
@@ -69,42 +70,44 @@ define( [], function () {
     function parseArguments(dirtyArguments) {
         if (typeof dirtyArguments !== 'object')
             return null;
-        var params = Array.prototype.slice.call(dirtyArguments),
-            paramStart = typeof params[0] === 'number' ? 1 : 0;
+        var args = Array.prototype.slice.call(dirtyArguments);
         return {
-            value: typeof params[0] === 'number' && params[0] || 0,
-            extra: params.slice(paramStart, -1),
-            callback: typeof params[params.length-1] === 'function'
-                && params.slice(-1)[0] || function() {}
+            value: typeof args[0] === 'number' && args[0] || 0,
+            params: args.slice(typeof args[0] === 'number' ? 1 : 0, -1),
+            callback: typeof args[args.length-1] === 'function'
+                && args.slice(-1)[0] || function() {}
         }
     }
 
     function Deferred(method, methodName, dirtyArguments) {
         methodName = methodName || 'then';
         var state = 'pending',
-            deferred = null,
-            self = this;
+            deferred = null;
 
         this.id = [];
-        this.params = parseArguments(dirtyArguments);
+        this.handle = parseArguments(dirtyArguments);
+
         this.resolve = function() {
-            var request,
+            if (this.handle === null)
+                return false;
+
+            var callback = this.handle.callback,
                 wrapper = function() {
                     state = 'resolved';
-                    self.params.callback.apply(null, arguments);
+                    callback.apply(null, arguments);
                     if (deferred !== null) {
                         deferred.resolve();
                     }
-                },
-            params = Array.prototype.slice.call(self.params.extra);
-            params.unshift(wrapper, self.params.value);
-            request = method.apply(null, params);
+                };
+            request = method
+                .apply(null, [wrapper, this.handle.value]
+                .concat(this.handle.params));
             this.id.push(request);
         }
 
         this[methodName] = function() {
             deferred = new Deferred(method, methodName);
-            deferred.params = parseArguments(arguments);
+            deferred.handle = parseArguments(arguments);
             deferred.id = this.id;
 
             if (state === 'resolved')
@@ -112,8 +115,7 @@ define( [], function () {
             return deferred;
         }
 
-        if (this.params !== null)
-            this.resolve();
+        this.resolve();
     }
 
     return {
@@ -128,15 +130,27 @@ define( [], function () {
         },
         setInterval: repeatDelay,
         setTimeout: function(callback) {
-            var params = Array.prototype.slice.call(arguments, 1);
-                params.unshift(function() {
+            var args = Array.prototype.slice.call(arguments, 1);
+                args.unshift(function() {
                     callback.apply(null, arguments);
                     return false;
                 });
-            return repeatDelay.apply(null, params);
+            return repeatDelay.apply(null, args);
+        },
+        setFrameval: repeatFrames,
+        setFrameout: function(callback) {
+            var args = Array.prototype.slice.call(arguments, 1);
+                args.unshift(function() {
+                    callback.apply(null, arguments);
+                    return false;
+                });
+            return repeatFrames.apply(null, args);
         },
         wait: function() {
             return new Deferred(this.setTimeout, 'wait', arguments);
+        },
+        waitFrame: function() {
+            return new Deferred(this.setFrameout, 'waitFrame', arguments);
         }
     }
 

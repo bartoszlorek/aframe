@@ -9,13 +9,21 @@ Methods similar to native JavaScript functions.
 .setInterval( function[, delay, param1, param2, ...] )
 ```
 
-Chain multiple `setTimeout` methods (behaving like a promise) in a `wait` form.
+Chain multiple `setTimeout` methods (behaving like a promise) in a `waitTime` form.
 
 ```
-.wait( [delay, param1, param2, ..., ]function )
+.waitTime( [delay, param1, param2, ..., ]function )
 ```
 
-Clear a `request` set with the methods above. The `request` is a return of them.
+Call a functions after/in period measured in `frames`, not milliseconds like methods above.
+
+```
+.setFrameout( function[, frames, param1, param2, ...] )
+.setFrameval( function[, frames, param1, param2, ...] )
+.waitFrames( [frames, param1, param2, ..., ]function )
+```
+
+Clear a request set with the methods above. The `request` is a return of them.
 
 ```
 .clear( request )
@@ -54,13 +62,13 @@ af.setInterval(function() {
 The third callback in this example won't be executed.
 
 ```javascript
-var request = af.wait(300, function() {
+var request = af.waitTime(300, function() {
     console.log('Hello');
 
-}).wait(100, ['cats', 'dogs'], function(pets) {
+}).waitTime(100, ['cats', 'dogs'], function(pets) {
     console.log('I like ' + pets.join(' and '));
 
-}).wait('John', function(name) {
+}).waitTime('John', function(name) {
     console.log(name + ' is fast, but not enough!');
 });
 

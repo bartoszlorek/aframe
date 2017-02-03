@@ -20,7 +20,7 @@ Call a functions after/in period measured in `frames`, not milliseconds like met
 ```
 .setFrameout( function[, frames, param1, param2, ...] )
 .setFrameval( function[, frames, param1, param2, ...] )
-.waitFrames( [frames, param1, param2, ..., ]function )
+.waitFrame( [frames, param1, param2, ..., ]function )
 ```
 
 Clear a request set with the methods above. The `request` is a return of them.

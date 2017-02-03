@@ -148,8 +148,8 @@ define( [], function () {
         waitTime: function() {
             return new Deferred(this.setTimeout, 'waitTime', arguments);
         },
-        waitFrames: function() {
-            return new Deferred(this.setFrameout, 'waitFrames', arguments);
+        waitFrame: function() {
+            return new Deferred(this.setFrameout, 'waitFrame', arguments);
         }
     }
 

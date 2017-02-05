@@ -60,9 +60,25 @@ require( ['aframe'], function(af) {
         console.log('my name is ' + name + '. ' + name + ' frame!');
     });*/
 
-    var request = af.setFrameout(function() {
+    /*var request = af.setFrameout(function() {
+        console.log('fire!');
+    }, 100);*/
+
+
+
+    // clear nested request
+    var request = af.setInterval(function() {
         console.log('fire!');
     }, 100);
+
+    request = {
+        id: request
+    }
+
+    af.setTimeout(function() {
+        af.clear(request);
+        console.log('hold!');
+    }, 1000);
 
 
 });

@@ -123,17 +123,18 @@ define( [], function () {
                 return false;
             var id = request.id;
 
-            if (typeof request.id === 'object'
-            &&  request.id.hasOwnProperty('id')) {
-                return this.clear(request.id);
+            if (typeof id === 'object'
+            &&  id.hasOwnProperty('id')) {
+                return this.clear(id);
             }
-            if (request.id.constructor === Array) {
-                id = request.id.length-1;
+            if (id.constructor === Array) {
+                id = id.length-1;
             }
             if (typeof id !== 'number') {
                 return false;
             }
             cancelAnimationFrame(id);
+            return true;
         },
         setInterval: repeatDelay,
         setTimeout: function(callback) {

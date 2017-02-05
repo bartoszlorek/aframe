@@ -120,12 +120,20 @@ define( [], function () {
     return {
         clear: function(request) {
             if (!request.hasOwnProperty('id'))
-                return;
-            cancelAnimationFrame(
-                request.id.constructor === Array ?
-                request.id[request.id.length-1].id :
-                request.id
-            );
+                return false;
+            var id = request.id;
+
+            if (typeof request.id === 'object'
+            &&  request.id.hasOwnProperty('id')) {
+                return this.clear(request.id);
+            }
+            if (request.id.constructor === Array) {
+                id = request.id.length-1;
+            }
+            if (typeof id !== 'number') {
+                return false;
+            }
+            cancelAnimationFrame(id);
         },
         setInterval: repeatDelay,
         setTimeout: function(callback) {

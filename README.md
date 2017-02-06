@@ -1,5 +1,5 @@
-# aframe
-Request Animation Frame Utilities AMD. Includes polyfill by Erik Möller (fixes from Paul Irish and Tino Zijdel).
+# Request Animation Frame Utilities
+Includes polyfill by Erik Möller (fixes from Paul Irish and Tino Zijdel).
 
 ## Usage
 Methods similar to native JavaScript functions.

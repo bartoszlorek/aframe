@@ -31,19 +31,15 @@ Clear a request set with the methods above. The `request` is a return of them.
 
 ## Examples
 
-```javascript
-require( ['aframe'], function(af) { ... })
-```
-
 Clear `request` after timeout.
 
 ```javascript
-var request = af.setInterval(function() {
+var request = aframe.setInterval(function() {
     console.log('fire!');
 }, 100);
 
-af.setTimeout(function() {
-    af.clear(request);
+aframe.setTimeout(function() {
+    aframe.clear(request);
 }, 1000);
 ```
 
@@ -51,7 +47,7 @@ Return `false` in callback function to clear.
 
 ```javascript
 var counter = 0;
-af.setInterval(function() {
+aframe.setInterval(function() {
     counter++;
     if (counter > 10) {
         return false;
@@ -62,7 +58,7 @@ af.setInterval(function() {
 The third callback in this example won't be executed.
 
 ```javascript
-var request = af.waitTime(300, function() {
+var request = aframe.waitTime(300, function() {
     console.log('Hello');
 
 }).waitTime(100, ['cats', 'dogs'], function(pets) {
@@ -72,7 +68,7 @@ var request = af.waitTime(300, function() {
     console.log(name + ' is fast, but not enough!');
 });
 
-af.setTimeout(function() {
-    af.clear(request);
+aframe.setTimeout(function() {
+    aframe.clear(request);
 }, 400);
 ```

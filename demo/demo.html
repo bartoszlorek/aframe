@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>aframe</title>
+</head>
+<body>
+
+    <script src="../dist/aframe.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            var request = aframe.waitTime(function() {
+                console.log('hello');
+
+            }).waitTime(300, "John", function(name) {
+                console.log('my name is ' + name);
+
+            }).waitTime(1000, ['cats', 'dogs'], 1, 2, 3, function(pets, a, b, c) {
+                console.log('I like ' + pets.join(' and '), a, b, c);
+
+            }).waitTime(100, function() {
+                console.log('bye');
+            });
+        })();
+    </script>
+    
+</body>
+</html>

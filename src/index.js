@@ -1,84 +1,19 @@
+import './.utils/raf-polyfill'
 
-require.config({
-	paths: {
-		aframe: 'aframe'
-	}
-});
+import clear from './clear'
+import setFrameInterval from './set-frame-interval'
+import setFrameTimeout from './set-frame-timeout'
+import waitTimeout from './wait-timeout'
+import setTaskout from './set-taskout'
+import setRandval from './set-randval'
 
-require( ['aframe'], function(af) {
+const api = {
+    clear,
+    setInterval: setFrameInterval,
+    setTimeout: setFrameTimeout,
+    waitTimeout,
+    setTaskout,
+    setRandval
+}
 
-    // clear request after iteration amount
-    /*
-    var counter = 0;
-    af.setInterval(function() {
-        console.log('fire! ' + counter);
-        counter++;
-
-        if (counter > 10) {
-            return false;
-        }
-    }, 100);
-    */
-
-    
-    // clear request after timeout
-    /* 
-    var request = af.setInterval(function() {
-        console.log('fire!');
-    }, 100);
-
-    af.setTimeout(function() {
-        af.clear(request);
-        console.log('hold!');
-    }, 1000);
-    */
-
-    
-    /*var request = af.wait(function() {
-        console.log('hello');
-
-    }).wait(300, "John", function(name) {
-        console.log('my name is ' + name);
-
-    }).wait(1000, ['cats', 'dogs'], 1, 2, 3, function(pets, a, b, c) {
-        console.log('I like ' + pets.join(' and '), a, b, c);
-
-    }).wait(100, function() {
-        console.log('bye');
-    });
-
-    
-    af.setTimeout(function() {
-        af.clear(request);
-    }, 500);*/
-
-
-    /*var request = af.waitFrame(function() {
-        console.log('hello frames');
-
-    }).waitFrame(300, "John", function(name) {
-        console.log('my name is ' + name + '. ' + name + ' frame!');
-    });*/
-
-    /*var request = af.setFrameout(function() {
-        console.log('fire!');
-    }, 100);*/
-
-
-
-    // clear nested request
-    var request = af.setInterval(function() {
-        console.log('fire!');
-    }, 100);
-
-    request = {
-        id: request
-    }
-
-    af.setTimeout(function() {
-        af.clear(request);
-        console.log('hold!');
-    }, 1000);
-
-
-});
+export default api

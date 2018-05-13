@@ -1,11 +1,12 @@
 {
   "name": "aframe",
   "version": "1.0.1",
-  "description": "Request Animation Frame Utilities AMD",
+  "description": "Request Animation Frame Utilities",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "rollup --config",
+    "test": "jest",
+    "test-watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -13,9 +14,18 @@
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "fraction.js": "^4.0.8",
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
-    "requirejs": "^2.3.2",
-    "webpack": "^2.2.1"
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "jest-cli": "^22.4.3",
+    "rollup": "^0.58.2",
+    "rollup-plugin-babel": "^3.0.4",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-uglify": "^3.0.0"
   }
 }

@@ -1,74 +1,74 @@
 # Request Animation Frame Utilities
-Includes polyfill by Erik Möller (fixes from Paul Irish and Tino Zijdel).
+Includes [polyfill](https://gist.github.com/paulirish/1579671) by Erik Möller (fixes from Paul Irish and Tino Zijdel).
 
-## Usage
-Methods similar to native JavaScript functions.
+## Methods
+The `setTimeout` and `setInterval` are similar to native JavaScript functions but operate on animation frames.
 
-```
-.setTimeout( function[, delay, param1, param2, ...] )
-.setInterval( function[, delay, param1, param2, ...] )
-```
-
-Chain multiple `setTimeout` methods (behaving like a promise) in a `waitTime` form.
-
-```
-.waitTime( [delay, param1, param2, ..., ]function )
+### setTimeout
+```javascript
+.setTimeout(callback, delay=0, param1, param2, ...)
 ```
 
-Call a functions after/in period measured in `frames`, not milliseconds like methods above.
+### setInterval
+```javascript
+.setInterval(callback, delay=0, param1, param2, ...)
+```
+The `callback` function may exit iteration early by returning `false`.
 
+### waitTimeout
+```javascript
+.waitTime(callback, delay=0, param1, param2, ...)
 ```
-.setFrameout( function[, frames, param1, param2, ...] )
-.setFrameval( function[, frames, param1, param2, ...] )
-.waitFrame( [frames, param1, param2, ..., ]function )
-```
+Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods.
 
-Clear a request set with the methods above. The `request` is a return of them.
+### setTaskout
+```javascript
+.setTaskout(callback, duration=0, steps=1, param1, param2, ...)
+```
+Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1 and n additional parameters.
 
+### setRandval
+```javascript
+.setRandval(callback, delay=0, variation=0, param1, param2, ...)
 ```
-.clear( request )
+Method similar to the `setInterval` but call the iteration function with random `variation`. Final delay time is calculated as `delay + random(+/-variation)`.
+
+### clear
+```javascript
+.clear(request)
 ```
+Clear a request animation frame of methods above. The `request` object is a return of them.
 
 ## Examples
-
 Clear `request` after timeout.
-
 ```javascript
-var request = aframe.setInterval(function() {
-    console.log('fire!');
-}, 100);
+let request = aframe.setInterval(() => {
+    console.log('fire!')
+}, 100)
 
-aframe.setTimeout(function() {
-    aframe.clear(request);
-}, 1000);
+aframe.setTimeout(() => {
+    aframe.clear(request)
+}, 1000)
 ```
 
-Return `false` in callback function to clear.
-
+Return `false` to exit iteration.
 ```javascript
-var counter = 0;
-aframe.setInterval(function() {
-    counter++;
-    if (counter > 10) {
-        return false;
+let counter = 0
+aframe.setInterval(() => {
+    if (++counter >= 5) {
+        return false
     }
-}, 100);
+}, 100)
 ```
 
-The third callback in this example won't be executed.
-
+The third `callback` function won't be executed.
 ```javascript
-var request = aframe.waitTime(300, function() {
-    console.log('Hello');
+let request = aframe
+    .waitTimeout(() => console.log('Hello'), 300)
+    .waitTimeout(name => console.log(name), 100, 'John')
+    .waitTimeout(surname => console.log(surname), 200, 'Doe') 
 
-}).waitTime(100, ['cats', 'dogs'], function(pets) {
-    console.log('I like ' + pets.join(' and '));
-
-}).waitTime('John', function(name) {
-    console.log(name + ' is fast, but not enough!');
-});
-
-aframe.setTimeout(function() {
-    aframe.clear(request);
-}, 400);
+aframe.setTimeout(() => {
+    aframe.clear(request)
+}, 500)
 ```

@@ -17,7 +17,7 @@ The `callback` function may exit iteration early by returning `false`.
 
 ### waitTimeout
 ```javascript
-.waitTime(callback, delay=0, param1, param2, ...)
+.waitTimeout(callback, delay=0, param1, param2, ...)
 ```
 Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods.
 

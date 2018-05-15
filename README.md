@@ -8,36 +8,37 @@ The `setTimeout` and `setInterval` are similar to native JavaScript functions bu
 ```javascript
 .setTimeout(callback, delay=0, param1, param2, ...)
 ```
+Returns the `request` object.
 
 ### setInterval
 ```javascript
 .setInterval(callback, delay=0, param1, param2, ...)
 ```
-The `callback` function may exit iteration early by returning `false`.
+The `callback` function may exit iteration early by returning `false`. Returns the `request` object.
 
 ### waitTimeout
 ```javascript
 .waitTimeout(callback, delay=0, param1, param2, ...)
 ```
-Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods.
+Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods. Returns the `request` object.
 
 ### setTaskout
 ```javascript
 .setTaskout(callback, duration=0, steps=1, param1, param2, ...)
 ```
-Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1 and n additional parameters.
+Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1 and n additional parameters. Returns the `request` object.
 
 ### setRandval
 ```javascript
 .setRandval(callback, delay=0, variation=0, param1, param2, ...)
 ```
-Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`.
+Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`. Returns the `request` object.
 
 ### clear
 ```javascript
 .clear(request)
 ```
-Clear a request animation frame of methods above. The `request` object is a return of them.
+Clear a request animation frame of any method.
 
 ## Examples
 Clear `request` after timeout.

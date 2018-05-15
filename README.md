@@ -14,25 +14,25 @@ Returns the `request` object.
 ```javascript
 .setInterval(callback, delay=0, param1, param2, ...)
 ```
-The `callback` function may exit iteration early by returning `false`. Returns the `request` object.
+The `callback` function may exit iteration early by returning `false`. Method returns the `request` object.
 
 ### waitTimeout
 ```javascript
 .waitTimeout(callback, delay=0, param1, param2, ...)
 ```
-Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods. Returns the `request` object.
+Chain multiple `setTimeout` methods where previous `callback` function starts next timer. Function that returns `false` stops execution of next methods. Method returns the `request` object.
 
 ### setTaskout
 ```javascript
 .setTaskout(callback, duration=0, steps=1, param1, param2, ...)
 ```
-Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1 and n additional parameters. Returns the `request` object.
+Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1 and n additional parameters. Method returns the `request` object.
 
 ### setRandval
 ```javascript
 .setRandval(callback, delay=0, variation=0, param1, param2, ...)
 ```
-Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`. Returns the `request` object.
+Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`. Method returns the `request` object.
 
 ### clear
 ```javascript

@@ -31,7 +31,7 @@ Method similar to the `setTimeout` but call the function `steps` times in `durat
 ```javascript
 .setRandval(callback, delay=0, variation=0, param1, param2, ...)
 ```
-Method similar to the `setInterval` but call the iteration function with random `variation`. Final delay time is calculated as `delay + random(+/-variation)`.
+Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`.
 
 ### clear
 ```javascript

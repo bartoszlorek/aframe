@@ -36,6 +36,27 @@ describe('setTaskout', () => {
         expect(calls).toEqual([[0.25], [0.5], [0.75], [1]])
     })
 
+    it('should correctly add step fraction', () => {
+        const callbackA = jest.fn()
+        const callbackB = jest.fn()
+
+        setTaskout(callbackA, 10, 10)
+        setTaskout(callbackB, 10, 6)
+
+        jest.runTimersToTime(200)
+
+        // prettier-ignore
+        expect(callbackA.mock.calls).toEqual([
+            [0.1], [0.2], [0.3], [0.4], [0.5],
+            [0.6], [0.7], [0.8], [0.9], [1]
+        ])
+        // prettier-ignore
+        expect(callbackB.mock.calls).toEqual([
+            [1 / 6], [2 / 6], [0.5],
+            [4 / 6], [5 / 6], [1]
+        ])
+    })
+
     it('should stop after 10 ms (inclusive)', () => {
         const callback = jest.fn()
         const request = setTaskout(callback, 20, 5)

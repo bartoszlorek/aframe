@@ -31,7 +31,10 @@ export default {
             }
         }),
         babel({
-            exclude: ['node_modules/**']
+            babelrc: false,
+            exclude: 'node_modules/**',
+            presets: [['env', { modules: false }]],
+            plugins: ['external-helpers']
         })
     ],
     external: []
